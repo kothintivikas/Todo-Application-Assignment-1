@@ -16,7 +16,7 @@ const initializeDbAndServer = async () => {
       driver: sqlite3.Database,
     });
     app.listen(3000, () => {
-      console.log("Server Running at http://localhost:3000/");
+      console.log("Server is Running at http://localhost:3000/");
     });
   } catch (error) {
     console.log(`DB Error: ${error.message}`);
@@ -40,13 +40,17 @@ const hasStatusProperty = (requestQuery) => {
   return requestQuery.status !== undefined;
 };
 
-const hasCategoryAndStatus = (requestQuery) => {
+const hasCategoryProperty = (requestQuery) => {
+  return requestQuery.category !== undefined;
+};
+
+const hasCategoryAndStatusProperties = (requestQuery) => {
   return (
     requestQuery.category !== undefined && requestQuery.status !== undefined
   );
 };
 
-const hasCategoryAndPriority = (requestQuery) => {
+const hasCategoryAndPriorityProperties = (requestQuery) => {
   return (
     requestQuery.category !== undefined && requestQuery.priority !== undefined
   );
@@ -56,9 +60,7 @@ const hasSearchProperty = (requestQuery) => {
   return requestQuery.search_q !== undefined;
 };
 
-const hasCategoryProperty = (requestQuery) => {
-  return requestQuery.category !== undefined;
-};
+
 
 const outPutResult = (dbObject) => {
   return {
@@ -124,8 +126,8 @@ app.get("/todos/", async (request, response) => {
       break;
 
     case hasCategoryAndPriority(request.query):
-      if ((category = "WORK" || category = "HOME" || category = "LEARNING")) {
-        if ((priority = "HIGH" || priority = "MEDIUM" || priority = "LOW")) {
+      if ((category === "WORK" || category === "HOME" || category === "LEARNING")) {
+        if ((priority === "HIGH" || priority === "MEDIUM" || priority === "LOW")) {
           getTodosQuery = `SELECT * FROM todo WHERE category = '${category} and priority = '${priority}';`;
           data = await database.all(getTodosQuery);
           response.send(data.map((eachItem) => outPutResult(eachItem)));
